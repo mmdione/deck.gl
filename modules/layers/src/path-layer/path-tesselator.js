@@ -75,7 +75,7 @@ export default class PathTesselator extends Tesselator {
         return this._updateAttribute({
           target,
           size: 3,
-          getValue: (object, index) => accessor(index)
+          getValue: (object, context) => accessor(context.index)
         });
 
       default:
