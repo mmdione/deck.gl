@@ -188,14 +188,14 @@ export default class HexagonCellLayer extends Layer {
       return;
     }
 
-    const {data, getCentroid} = this.props;
+    const {getCentroid} = this.props;
     const {value} = attribute;
     let i = 0;
-    for (const object of data) {
-      const position = getCentroid(object);
+    this.iterateData((object, context) => {
+      const position = getCentroid(object, context);
       value[i++] = fp64LowPart(position[0]);
       value[i++] = fp64LowPart(position[1]);
-    }
+    });
   }
 }
 

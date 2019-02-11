@@ -1,6 +1,8 @@
 /* global document */
 import GL from '@luma.gl/constants';
 import {Texture2D, loadImages, loadTextures} from 'luma.gl';
+import {experimental} from '@deck.gl/core';
+const {forEach} = experimental;
 
 const MAX_CANVAS_WIDTH = 1024;
 const DEFAULT_BUFFER = 4;
@@ -114,8 +116,8 @@ function getIcons(data, getIcon) {
   }
 
   const icons = {};
-  for (const point of data) {
-    const icon = getIcon(point);
+  forEach(data, (object, context) => {
+    const icon = getIcon(object, context);
     if (!icon) {
       throw new Error('Icon is missing.');
     }
@@ -127,7 +129,7 @@ function getIcons(data, getIcon) {
     if (!icons[icon.url]) {
       icons[icon.url] = icon;
     }
-  }
+  });
   return icons;
 }
 
@@ -153,8 +155,8 @@ export default class IconManager {
     return this._texture;
   }
 
-  getIconMapping(dataPoint) {
-    const icon = this._getIcon(dataPoint);
+  getIconMapping(dataPoint, context) {
+    const icon = this._getIcon(dataPoint, context);
     const name = this._autoPacking ? icon.url : icon;
     return this._mapping[name] || {};
   }

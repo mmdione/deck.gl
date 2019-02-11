@@ -19,6 +19,8 @@
 // THE SOFTWARE.
 
 import {hexbin} from 'd3-hexbin';
+import {experimental} from '@deck.gl/core';
+const {forEach} = experimental;
 
 /**
  * Use d3-hexbin to performs hexagonal binning from geo points to hexagons
@@ -35,16 +37,16 @@ export function pointToHexbin({data, radius, getPosition}, viewport) {
 
   // add world space coordinates to points
   const screenPoints = [];
-  for (const pt of data) {
+  forEach(data, (pt, context) => {
     screenPoints.push(
       Object.assign(
         {
-          screenCoord: viewport.projectFlat(getPosition(pt))
+          screenCoord: viewport.projectFlat(getPosition(pt, context))
         },
         pt
       )
     );
-  }
+  });
 
   const newHexbin = hexbin()
     .radius(radiusInPixel)

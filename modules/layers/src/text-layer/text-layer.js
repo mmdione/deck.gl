@@ -129,13 +129,13 @@ export default class TextLayer extends CompositeLayer {
 
   /* eslint-disable no-loop-func */
   transformStringToLetters() {
-    const {data, getText} = this.props;
+    const {getText} = this.props;
     const {iconMapping} = this.state;
 
     const transformedData = [];
-    let objectIndex = 0;
-    for (const val of data) {
-      const text = getText(val);
+
+    this.iterateData((object, context) => {
+      const text = getText(object, context);
       if (text) {
         const letters = Array.from(text);
         const offsets = [0];
@@ -148,8 +148,8 @@ export default class TextLayer extends CompositeLayer {
             offsets,
             len: text.length,
             // reference of original object and object index
-            object: val,
-            objectIndex
+            object,
+            objectIndex: context.index
           };
 
           const frame = iconMapping[letter];
@@ -163,9 +163,7 @@ export default class TextLayer extends CompositeLayer {
           transformedData.push(datum);
         });
       }
-
-      objectIndex++;
-    }
+    });
 
     this.setState({data: transformedData});
   }

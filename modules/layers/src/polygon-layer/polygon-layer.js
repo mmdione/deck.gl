@@ -82,12 +82,12 @@ export default class PolygonLayer extends CompositeLayer {
     });
   }
 
-  _getPaths({data, getPolygon, positionFormat}) {
+  _getPaths({getPolygon, positionFormat}) {
     const paths = [];
     const positionSize = positionFormat === 'XY' ? 2 : 3;
 
-    for (const object of data) {
-      const {positions, holeIndices} = Polygon.normalize(getPolygon(object), positionSize);
+    this.iterateData((object, context) => {
+      const {positions, holeIndices} = Polygon.normalize(getPolygon(object, context), positionSize);
 
       if (holeIndices) {
         // split the positions array into `holeIndices.length + 1` rings
@@ -103,7 +103,7 @@ export default class PolygonLayer extends CompositeLayer {
       } else {
         paths.push({path: positions, object});
       }
-    }
+    });
     return paths;
   }
 

@@ -261,17 +261,17 @@ export default class ScreenGridLayer extends Layer {
   }
   // Process 'data' and build positions and weights Arrays.
   _processData() {
-    const {data, getPosition} = this.props;
+    const {getPosition} = this.props;
     const positions = [];
     const colorWeights = [];
     const {weights} = this.state;
 
-    for (const point of data) {
-      const position = getPosition(point);
+    this.iterateData((object, context) => {
+      const position = getPosition(object, context);
       positions.push(position[0]);
       positions.push(position[1]);
-      colorWeights.push(...this._getWeight(point));
-    }
+      colorWeights.push(...this._getWeight(object, context));
+    });
     weights.color.values = colorWeights;
     this.setState({positions});
   }

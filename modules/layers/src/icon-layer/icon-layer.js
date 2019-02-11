@@ -218,52 +218,49 @@ export default class IconLayer extends Layer {
       return;
     }
 
-    const {data, getPosition} = this.props;
+    const {getPosition} = this.props;
     const {value} = attribute;
     let i = 0;
-    for (const point of data) {
-      const position = getPosition(point);
+    this.iterateData((object, context) => {
+      const position = getPosition(object, context);
       value[i++] = fp64LowPart(position[0]);
       value[i++] = fp64LowPart(position[1]);
-    }
+    });
   }
 
   calculateInstanceOffsets(attribute) {
-    const {data} = this.props;
     const {iconManager} = this.state;
     const {value} = attribute;
     let i = 0;
-    for (const object of data) {
-      const rect = iconManager.getIconMapping(object);
+    this.iterateData((object, context) => {
+      const rect = iconManager.getIconMapping(object, context);
       value[i++] = rect.width / 2 - rect.anchorX || 0;
       value[i++] = rect.height / 2 - rect.anchorY || 0;
-    }
+    });
   }
 
   calculateInstanceColorMode(attribute) {
-    const {data} = this.props;
     const {iconManager} = this.state;
     const {value} = attribute;
     let i = 0;
-    for (const object of data) {
-      const mapping = iconManager.getIconMapping(object);
+    this.iterateData((object, context) => {
+      const mapping = iconManager.getIconMapping(object, context);
       const colorMode = mapping.mask;
       value[i++] = colorMode ? 1 : 0;
-    }
+    });
   }
 
   calculateInstanceIconFrames(attribute) {
-    const {data} = this.props;
     const {iconManager} = this.state;
     const {value} = attribute;
     let i = 0;
-    for (const object of data) {
-      const rect = iconManager.getIconMapping(object);
+    this.iterateData((object, context) => {
+      const rect = iconManager.getIconMapping(object, context);
       value[i++] = rect.x || 0;
       value[i++] = rect.y || 0;
       value[i++] = rect.width || 0;
       value[i++] = rect.height || 0;
-    }
+    });
   }
 }
 

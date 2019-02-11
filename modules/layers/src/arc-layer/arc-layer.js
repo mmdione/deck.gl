@@ -143,18 +143,18 @@ export default class ArcLayer extends Layer {
   }
 
   calculateInstancePositions(attribute) {
-    const {data, getSourcePosition, getTargetPosition} = this.props;
+    const {getSourcePosition, getTargetPosition} = this.props;
     const {value, size} = attribute;
     let i = 0;
-    for (const object of data) {
-      const sourcePosition = getSourcePosition(object);
-      const targetPosition = getTargetPosition(object);
+    this.iterateData((object, context) => {
+      const sourcePosition = getSourcePosition(object, context);
+      const targetPosition = getTargetPosition(object, context);
       value[i + 0] = sourcePosition[0];
       value[i + 1] = sourcePosition[1];
       value[i + 2] = targetPosition[0];
       value[i + 3] = targetPosition[1];
       i += size;
-    }
+    });
   }
 
   calculateInstancePositions64Low(attribute) {
@@ -166,18 +166,18 @@ export default class ArcLayer extends Layer {
       return;
     }
 
-    const {data, getSourcePosition, getTargetPosition} = this.props;
+    const {getSourcePosition, getTargetPosition} = this.props;
     const {value, size} = attribute;
     let i = 0;
-    for (const object of data) {
-      const sourcePosition = getSourcePosition(object);
-      const targetPosition = getTargetPosition(object);
+    this.iterateData((object, context) => {
+      const sourcePosition = getSourcePosition(object, context);
+      const targetPosition = getTargetPosition(object, context);
       value[i + 0] = fp64LowPart(sourcePosition[0]);
       value[i + 1] = fp64LowPart(sourcePosition[1]);
       value[i + 2] = fp64LowPart(targetPosition[0]);
       value[i + 3] = fp64LowPart(targetPosition[1]);
       i += size;
-    }
+    });
   }
 }
 
