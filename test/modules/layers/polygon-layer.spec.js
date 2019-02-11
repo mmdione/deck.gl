@@ -19,43 +19,23 @@
 // THE SOFTWARE.
 
 import test from 'tape-catch';
-import {testLayer} from '@deck.gl/test-utils';
+
+import {autoTestLayer} from './test-utils';
 
 import {PolygonLayer} from 'deck.gl';
 
 import * as FIXTURES from 'deck.gl/test/data';
-const data = FIXTURES.polygons;
 
 test('PolygonLayer#constructor', t => {
-  testLayer({
+  autoTestLayer(t, {
     Layer: PolygonLayer,
-    testCases: [
-      {props: []},
-      {props: null},
-      {
-        props: {
-          data,
-          getPolygon: f => f
-        }
-      },
-      {
-        updateProps: {
-          filled: false
-        },
-        assert({layer, subLayers, oldState}) {
-          t.ok(layer.state, 'should update layer state');
-          t.ok(subLayers.length, 'subLayers rendered');
-        }
-      },
-      {
-        updateProps: {
-          data: data.slice(0, 10)
-        },
-        assert({layer, oldState}) {
-          t.ok(layer.state.paths.length !== oldState.paths.length, 'should update state.paths');
-        }
-      }
-    ]
+    sampleProps: {
+      data: FIXTURES.polygons.slice(0, 3),
+      getPolygon: f => f
+    },
+    assert({layer}) {
+      t.ok(layer.state.paths.length, 'should update state.paths');
+    }
   });
 
   t.end();

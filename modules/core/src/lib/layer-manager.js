@@ -456,7 +456,8 @@ export default class LayerManager {
           initLayerInSeer(newLayer); // Initializes layer in seer chrome extension (if connected)
         } else {
           this._transferLayerState(oldLayer, newLayer);
-          this._updateLayer(newLayer);
+          const err = this._updateLayer(newLayer);
+          error = error || err;
           updateLayerInSeer(newLayer); // Updates layer in seer chrome extension (if connected)
         }
         generatedLayers.push(newLayer);
