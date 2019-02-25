@@ -31,11 +31,6 @@ varying float vTime;
 
 // completion indicates the portion of line segment to be drawn at current time
 varying float completion;
-
-// xPosition is the position of the line segment along x direction
-// it should be rendered if xPosition < completion
-// this can generate the effect that the path moves forward progressively
-varying float xPosition;
 `;
 
 const fragmentShaderToInject = `\
@@ -43,7 +38,7 @@ if(vTime > 1.0 || vTime < 0.0) {
   discard;
 }
 
-if(xPosition > completion){
+if(vPathPosition.y / vPathLength > completion){
   discard;
 }
 `;
@@ -53,7 +48,6 @@ vec4 shift = vec4(0., 0., mod(instanceEndPositions.z, trailLength) * 1e-4, 0.);
 gl_Position = gl_Position + shift;
 vTime = 1.0 - (currentTime - instanceStartPositions.z) / trailLength;
 completion = clamp((currentTime - instanceStartPositions.z) / (instanceEndPositions.z - instanceStartPositions.z), 0.0, 1.0);
-xPosition = positions.x;
 `;
 
 export default class DynamicPathLayer extends PathLayer {
@@ -71,28 +65,14 @@ export default class DynamicPathLayer extends PathLayer {
   }
 
   draw({uniforms}) {
-    const {
-      rounded,
-      miterLimit,
-      widthScale,
-      widthMinPixels,
-      widthMaxPixels,
-      dashJustified,
-      trailLength,
-      currentTime
-    } = this.props;
+    const {trailLength, currentTime} = this.props;
 
-    this.state.model.render(
-      Object.assign({}, uniforms, {
-        jointType: Number(rounded),
-        alignMode: Number(dashJustified),
-        widthScale,
-        miterLimit,
-        widthMinPixels,
-        widthMaxPixels,
+    super.draw({
+      uniforms: {
+        ...uniforms,
         trailLength,
         currentTime
-      })
-    );
+      }
+    });
   }
 }
